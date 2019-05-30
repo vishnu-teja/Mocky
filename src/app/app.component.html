@@ -1,3 +1,17 @@
-<app-header></app-header>
+<div class="container-fluid">
+  <app-header></app-header>
 
-<router-outlet></router-outlet>
+  <div class="jumbotron text-center">
+    <h1>asdf</h1>
+  </div>
+
+  <mat-sidenav-container class="example-container">
+    <mat-sidenav mode="side" class="sidenav-content" opened>
+      <app-side-nav></app-side-nav>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
