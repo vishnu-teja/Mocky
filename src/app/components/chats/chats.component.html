@@ -1,0 +1,23 @@
+<div>
+  <p *ngFor="let msg of messages$ | async">
+    {{ msg.msg }}
+  </p>
+</div>
+
+<div class="message">
+  <div nz-row>
+    <div nz-col nzSpan="23">
+      <textarea
+        nz-input
+        placeholder="type message here..."
+        [(ngModel)]="message"
+        nzAutosize
+      ></textarea>
+    </div>
+    <div nz-col nzSpan="1">
+      <button nz-button nzType="primary" nzShape="circle">
+        <em nz-icon type="arrow-right" (click)="sendMsg()"></em>
+      </button>
+    </div>
+  </div>
+</div>

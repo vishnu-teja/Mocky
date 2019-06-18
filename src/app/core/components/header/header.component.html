@@ -1,1 +1,21 @@
-<p>header works</p>
+<nz-header>
+  <div class="logo"></div>
+  <div>
+    <input
+      placeholder="search mockers"
+      nz-input
+      [(ngModel)]="searchText"
+      [nzAutocomplete]="auto"
+      (keyup)="searchUser()"
+    />
+    <nz-autocomplete nzBackfill #auto>
+      <nz-auto-option
+        *ngFor="let user of users"
+        [nzValue]="user.userName"
+        (selectionChange)="routeToUserProfile($event)"
+      >
+        {{ user.userName }}
+      </nz-auto-option>
+    </nz-autocomplete>
+  </div>
+</nz-header>
