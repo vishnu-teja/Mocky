@@ -1,21 +1,29 @@
 <nz-header>
-  <div class="logo"></div>
-  <div>
-    <input
-      placeholder="search mockers"
-      nz-input
-      [(ngModel)]="searchText"
-      [nzAutocomplete]="auto"
-      (keyup)="searchUser()"
-    />
-    <nz-autocomplete nzBackfill #auto>
-      <nz-auto-option
-        *ngFor="let user of users"
-        [nzValue]="user.userName"
-        (selectionChange)="routeToUserProfile($event)"
-      >
-        {{ user.userName }}
-      </nz-auto-option>
-    </nz-autocomplete>
+  <div nz-row>
+    <div nz-col nzSpan="1" class="logo"></div>
+    <div nz-col nzSpan="20">
+      <input
+        placeholder="search mockers"
+        nz-input
+        [(ngModel)]="searchText"
+        [nzAutocomplete]="auto"
+        (keyup)="searchUser()"
+      />
+      <nz-autocomplete nzBackfill #auto>
+        <nz-auto-option
+          *ngFor="let user of users"
+          [nzValue]="user.userName"
+          (selectionChange)="routeToUserProfile($event)"
+        >
+          {{ user.userName }}
+        </nz-auto-option>
+      </nz-autocomplete>
+    </div>
+
+    <div nz-col nzSpan="1">
+      <button nz-button nzType="dashed" *ngIf="user" (click)="logout()">
+        logout
+      </button>
+    </div>
   </div>
 </nz-header>

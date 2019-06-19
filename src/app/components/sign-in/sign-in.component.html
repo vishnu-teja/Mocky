@@ -5,15 +5,16 @@
   (ngSubmit)="submitForm()"
 >
   <nz-form-item>
-    <nz-form-control>
+    <nz-form-control *ngIf="!isUser">
       <nz-input-group>
-        <input formControlName="name" nz-input placeholder="Name" />
+        <input formControlName="fullName" nz-input placeholder="Name" />
       </nz-input-group>
       <nz-form-explain
         *ngIf="
-          validateForm.get('name')?.dirty && validateForm.get('name')?.errors
+          validateForm.get('fullName')?.dirty &&
+          validateForm.get('fullName')?.errors
         "
-        >Please input your Name!</nz-form-explain
+        >You don't have a name?!!</nz-form-explain
       >
     </nz-form-control>
   </nz-form-item>
@@ -57,6 +58,11 @@
       </button>
     </nz-form-control>
   </nz-form-item>
+
+  <p *ngIf="!isUser">
+    Already a member? <span (click)="switchForm()">Login</span>
+  </p>
+  <p *ngIf="isUser">Not a member? <span (click)="switchForm()">SignUp</span></p>
 </form>
 <ng-template #prefixUser><em nz-icon type="user"></em></ng-template>
 <ng-template #prefixLock><em nz-icon type="lock"></em></ng-template>

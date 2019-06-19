@@ -65,4 +65,11 @@ export class HeaderComponent implements OnInit {
   public routeToUserProfile(event) {
     this.router.navigate([ROUTER_LINKS.PROFILE, event.source.nzValue]);
   }
+
+  public logout() {
+    this.us.logout().then(() => {
+      sessionStorage.clear();
+      this.us.emitUserData.next(null);
+    });
+  }
 }

@@ -1,11 +1,18 @@
 export interface User {
   key?: string;
-  firstName: string;
-  lastName?: string;
+  fullName: string;
   userName: string;
-  uCode?: string;
+  mockMail: string;
+  mockers?: Mocker[];
 }
 
-export interface Mocker extends User {
-  coMockers?: User[];
+export interface Mocker {
+  chatId: string;
+  lastMessage?: string;
+}
+
+export interface UserForm {
+  fullName?: string;
+  userName: string;
+  password: string;
 }

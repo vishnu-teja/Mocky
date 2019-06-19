@@ -7,6 +7,7 @@ import {
 } from 'src/app/shared/common/app.constants';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { User } from './../../shared/models/user.model';
 
 @Component({
   selector: 'app-profile',
@@ -14,9 +15,9 @@ import { AngularFirestore } from '@angular/fire/firestore';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  public profile: Mocker;
+  public profile: User;
   public loading = true;
-  private myProfile: Mocker;
+  private myProfile: User;
 
   constructor(
     private route: ActivatedRoute,
@@ -31,29 +32,29 @@ export class ProfileComponent implements OnInit {
   }
 
   private getProfile(userName) {
-    // this.us.getUser(DB_COLLECTIONS.USERS, userName).subscribe(data => {
-    //   this.profile = data[0];
-    //   this.loading = false;
-    // });
     this.fs
-      .collection('users')
-      .doc(userName + '@mocky.com')
+      .collection(DB_COLLECTIONS.USERS, ref =>
+        ref.where('userName', '==', userName)
+      )
       .valueChanges()
-      .subscribe((u: Mocker) => {
-        this.profile = u;
-        console.log(u);
+      .subscribe((u: User[]) => {
+        this.profile = u[0];
         this.loading = false;
       });
   }
 
   public startConversation() {
-    const isCoMocker =
-      this.myProfile.coMockers &&
-      this.myProfile.coMockers.find(m => m.userName === this.profile.userName);
-    const obj = isCoMocker
-      ? { chatId: isCoMocker.uCode }
-      : { uId: this.profile.userName };
-
-    this.router.navigate([ROUTER_LINKS.CHATS], { queryParams: obj });
+    this.fs
+      .collection(DB_COLLECTIONS.USERS)
+      .doc(this.myProfile.key)
+      .collection('mockers')
+      .doc(this.profile.key)
+      .valueChanges()
+      .subscribe((m: Mocker) => {
+        const isCoMocker =
+          m && m.chatId ? { chatId: m.chatId } : { uId: this.profile.key };
+        const obj = isCoMocker;
+        this.router.navigate([ROUTER_LINKS.CHATS], { queryParams: obj });
+      });
   }
 }

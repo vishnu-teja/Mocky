@@ -8,6 +8,7 @@ import { Route } from '@angular/compiler/src/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import { User } from './../../shared/models/user.model';
 
 @Component({
   selector: 'app-chats',
@@ -15,11 +16,14 @@ import { Observable } from 'rxjs';
   styleUrls: ['./chats.component.scss']
 })
 export class ChatsComponent implements OnInit {
+  private isNewConversation: boolean;
   public messages$: Observable<any>;
 
   public message: string;
 
-  private myProfile: Mocker;
+  private myProfile: User;
+
+  private queryParams;
 
   constructor(
     private us: UserService,
@@ -29,30 +33,74 @@ export class ChatsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.messages$ = this.fs.collection('/messages').valueChanges();
-    this.fs
-      .collection('/messages')
-      .add({ msg: 'adsf' })
-      .then(res => {
-        console.log(res);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-
     this.myProfile = this.us.emitUserData.getValue();
     this.getChatId();
   }
 
   private getChatId() {
     this.ar.queryParamMap.subscribe((data: any) => {
-      console.log(data.params);
+      let key;
+      this.queryParams = data.params;
+      if ('uId' in this.queryParams) {
+        this.isNewConversation = true;
+        key = this.myProfile.key + this.queryParams.uId;
+      } else {
+        this.isNewConversation = false;
+        key = this.queryParams.chatId;
+      }
+
+      this.messages$ = this.fs
+        .collection(DB_COLLECTIONS.CHATS)
+        .doc(key)
+        .collection('conversations')
+        .valueChanges();
     });
   }
 
+  private createChat(key: string, msg: object): void {
+    this.fs
+      .collection(DB_COLLECTIONS.CHATS)
+      .doc(key)
+      .collection('conversations')
+      .add(msg);
+    this.isNewConversation = false;
+  }
+
+  private updateChat(key: string, msg: object): void {
+    this.fs
+      .collection(DB_COLLECTIONS.CHATS)
+      .doc(key)
+      .collection('conversations')
+      .add(msg);
+  }
+
   public sendMsg() {
+    const msg: Message = {
+      message: this.message,
+      sentBy: this.myProfile.key,
+      date: new Date().toString()
+    };
+
+    if ('uId' in this.queryParams && this.isNewConversation) {
+      const key = this.myProfile.key + this.queryParams.uId;
+      this.createChat(key, msg);
+      this.updateProfile(key, this.queryParams.uId, this.myProfile.key);
+
+      this.updateProfile(key, this.myProfile.key, this.queryParams.uId);
+    } else {
+      const key =
+        this.queryParams.chatId || this.myProfile.key + this.queryParams.uId;
+      this.updateChat(key, msg);
+    }
     this.message = null;
   }
 
-  private updateMyProfile() {}
+  private updateProfile(key: string, uId: string, email: string) {
+    this.fs
+      .collection(DB_COLLECTIONS.USERS)
+      .doc(email)
+      .collection('mockers')
+      .doc(uId)
+      .set({ chatId: key });
+  }
 }

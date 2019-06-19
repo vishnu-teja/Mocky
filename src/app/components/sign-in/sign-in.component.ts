@@ -7,6 +7,8 @@ import {
 } from 'src/app/shared/common/app.constants';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { UserForm, User } from './../../shared/models/user.model';
+import { Mocker } from 'src/app/shared/models/user.model';
 
 @Component({
   selector: 'app-sign-in',
@@ -14,6 +16,7 @@ import { AngularFirestore } from '@angular/fire/firestore';
   styleUrls: ['./sign-in.component.scss']
 })
 export class SignInComponent implements OnInit {
+  public isUser = true;
   validateForm: FormGroup;
   constructor(
     private fb: FormBuilder,
@@ -23,12 +26,25 @@ export class SignInComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.createForm();
+  }
+
+  private createForm() {
     this.validateForm = this.fb.group({
-      name: [null],
-      userName: [null, [Validators.required]],
-      password: [null, [Validators.required]],
-      remember: [true]
+      fullName: [null, Validators.compose([Validators.required])],
+      userName: [null, Validators.compose([Validators.required])],
+      password: [null, Validators.compose([Validators.required])]
     });
+
+    const nameField = this.validateForm.get('fullName');
+    this.isUser
+      ? nameField.setValidators(null)
+      : nameField.setValidators([Validators.required]);
+  }
+
+  public switchForm() {
+    this.isUser = !this.isUser;
+    this.createForm();
   }
 
   submitForm(): void {
@@ -37,66 +53,53 @@ export class SignInComponent implements OnInit {
       this.validateForm.controls[i].updateValueAndValidity();
     }
 
-    const user: any = this.validateForm.value;
+    const user: UserForm = this.validateForm.value;
 
-    if (user.name) {
+    if (user.fullName) {
       this.signUp(user);
     } else {
       this.getUser(user);
     }
   }
 
-  private signUp(user: any) {
+  private signUp(user: UserForm) {
     const email = user.userName + '@mocky.com';
+
+    const newUser: User = {
+      fullName: user.fullName,
+      userName: user.userName,
+      mockMail: email
+    };
     this.us
       .createUserWithEmail(email, user.password)
       .then(data => {
-        console.log(data);
-        user.key = data.user.uid;
-        this.addNewUser(user);
+        newUser.key = data.user.uid;
+        this.addNewUser(newUser);
       })
       .catch(err => {
         this.notification.error('Error', err);
       });
   }
 
-  addNewUser(user) {
-    // this.us.addUser(DB_COLLECTIONS.USERS, user).then(data => {
-    //   console.log(data);
-
-    //   user.key = data.key;
-
-    //   this.setInSession(user);
-    // });
-    delete user.password;
+  addNewUser(user: User) {
     this.fs
       .collection('/users')
-      .doc(user.userName + '@mocky.com')
+      .doc(user.key)
       .set(user)
-      .then(res => {
-        console.log(res);
+      .then(() => {
         this.setInSession(user);
       });
   }
 
-  getUser(user) {
-    // this.us.getUser(DB_COLLECTIONS.USERS, user.userName).subscribe(data => {
-    //   console.log(data);
-    //   this.setInSession(data);
-    // });
-
-    this.us
-      .signInWithEmail(user.userName + '@mocky.com', user.password)
-      .then(data => {
-        console.log(data);
-      });
-
+  getUser(user: UserForm) {
     this.fs
-      .collection('/users')
-      .doc(user.userName + '@mocky.com')
+      .collection(DB_COLLECTIONS.USERS, ref =>
+        ref.where('userName', '==', user.userName)
+      )
       .valueChanges()
       .subscribe(data => {
         console.log(data);
+        this.setInSession(data[0]);
       });
   }
 

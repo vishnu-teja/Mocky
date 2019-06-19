@@ -1,7 +1,8 @@
 export interface Message {
-  UserName?: string;
+  sentBy?: string;
   UserId?: string;
   UserImage?: string;
-  type: string;
+  type?: string;
   message: string;
+  date: string;
 }

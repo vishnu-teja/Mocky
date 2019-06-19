@@ -30,60 +30,7 @@ export class UserService {
     return this.afAuth.auth.createUserWithEmailAndPassword(email, password);
   }
 
-  public signOut() {
+  public logout() {
     return this.afAuth.auth.signOut();
-  }
-
-  addUser(path: string, user) {
-    return this.fs.add(path, user);
-  }
-
-  getUser(path: string, userName) {
-    return (
-      this.db
-        // .list(path, ref => ref.orderByKey().equalTo('-Lh4mGRfU0LscsdT5jho'))
-        .list(path, ref => ref.orderByChild('userName').equalTo(userName))
-        .snapshotChanges()
-        .pipe(
-          map((data: any) => {
-            console.log(data);
-            return data.map((d: any) => {
-              return {
-                key: d.key,
-                ...d.payload.val()
-              };
-            });
-          })
-        )
-    );
-  }
-
-  updateUser(path, userData) {
-    const user = JSON.parse(JSON.stringify(userData));
-    const key = user.key;
-    delete user.key;
-    return of(this.db.object(path + key).update(user));
-  }
-
-  getUserByText(path, searchText) {
-    return this.db
-      .list(path, ref =>
-        ref
-          .orderByChild('userName')
-          .startAt(searchText)
-          .endAt(searchText + '\uf8ff')
-      )
-      .snapshotChanges()
-      .pipe(
-        map(data => {
-          console.log(data);
-          return data.map((d: any) => {
-            return {
-              key: d.key,
-              ...d.payload.val()
-            };
-          });
-        })
-      );
   }
 }
