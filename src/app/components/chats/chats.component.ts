@@ -61,7 +61,7 @@ export class ChatsComponent implements OnInit {
     this.fs
       .collection(DB_COLLECTIONS.CHATS)
       .doc(key)
-      .collection('conversations')
+      .collection(DB_COLLECTIONS.CONVERSATIONS)
       .add(msg);
     this.isNewConversation = false;
   }
@@ -70,7 +70,7 @@ export class ChatsComponent implements OnInit {
     this.fs
       .collection(DB_COLLECTIONS.CHATS)
       .doc(key)
-      .collection('conversations')
+      .collection(DB_COLLECTIONS.CONVERSATIONS)
       .add(msg);
   }
 
