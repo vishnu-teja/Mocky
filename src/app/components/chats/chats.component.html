@@ -1,37 +1,35 @@
 <div nz-row>
-  <div nz-col nzSpan="6"></div>
-  <div nz-col nzSpan="12">
+  <div nz-col nzSpan="0" [nzMd]="6"></div>
+  <div nz-col nzSpan="24" [nzMd]="12">
     <div nz-row>
-      <div nz-col nzSpan="8">
-        <nz-sider>
-          <app-side-nav></app-side-nav>
-        </nz-sider>
+      <div nz-col nzSpan="{{ onChats ? '24' : '0' }}" [nzMd]="8">
+        <app-side-nav></app-side-nav>
       </div>
-
-      <div nz-col nzSpan="16" class="chats">
-        <div *ngFor="let msg of messages$ | async" nz-row>
-          <div
-            [ngClass]="[
-              msg.sentBy === myProfile.key ? 'pull-right' : 'pull-left',
-              'chat-text'
-            ]"
-            nz-col
-          >
-            {{ decryptMsg(msg.message) }}
+      <div nz-col nzSpan="{{ onChats ? '0' : '24' }}" [nzMd]="16">
+        <div class="chats">
+          <div *ngFor="let msg of messages$ | async" nz-row>
+            <div
+              [ngClass]="[
+                msg.sentBy === myProfile.key ? 'pull-right' : 'pull-left',
+                'chat-text'
+              ]"
+              nz-col
+            >
+              {{ decryptMsg(msg.message) }}
+            </div>
+            <p
+              [ngClass]="[
+                msg.sentBy === myProfile.key ? 'date-right' : 'date-left'
+              ]"
+              nz-col
+            >
+              {{ dateFormatter(msg.date) }}
+            </p>
           </div>
-          <p
-            [ngClass]="[
-              msg.sentBy === myProfile.key ? 'date-right' : 'date-left'
-            ]"
-            nz-col
-          >
-            {{ dateFormatter(msg.date) }}
-          </p>
         </div>
-
         <div class="message">
           <div nz-row>
-            <div nz-col nzSpan="23">
+            <div nz-col class="text-area" nzSpan="21">
               <textarea
                 nz-input
                 placeholder="type message here..."
@@ -39,9 +37,9 @@
                 nzAutosize
               ></textarea>
             </div>
-            <div nz-col nzSpan="1">
-              <button nz-button nzType="primary" nzShape="circle">
-                <em nz-icon type="arrow-right" (click)="sendMsg()"></em>
+            <div nz-col class="send-button" nzSpan="3">
+              <button nz-button nzType="primary">
+                <em nz-icon type="right" (click)="sendMsg()"></em>
               </button>
             </div>
           </div>
@@ -49,5 +47,5 @@
       </div>
     </div>
   </div>
-  <div nz-col nzSpan="6"></div>
+  <div nz-col nzSpan="0" [nzMd]="6"></div>
 </div>

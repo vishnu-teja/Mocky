@@ -1,68 +1,72 @@
-<form
-  nz-form
-  [nzLayout]="'inline'"
-  [formGroup]="validateForm"
-  (ngSubmit)="submitForm()"
->
-  <nz-form-item>
-    <nz-form-control *ngIf="!isUser">
-      <nz-input-group>
-        <input formControlName="fullName" nz-input placeholder="Name" />
-      </nz-input-group>
-      <nz-form-explain
-        *ngIf="
-          validateForm.get('fullName')?.dirty &&
-          validateForm.get('fullName')?.errors
-        "
-        >You don't have a name?!!</nz-form-explain
-      >
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-control>
-      <nz-input-group [nzPrefix]="prefixUser">
-        <input formControlName="userName" nz-input placeholder="Username" />
-      </nz-input-group>
-      <nz-form-explain
-        *ngIf="
-          validateForm.get('userName')?.dirty &&
-          validateForm.get('userName')?.errors
-        "
-        >Please input your username!</nz-form-explain
-      >
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-control>
-      <nz-input-group [nzPrefix]="prefixLock">
-        <input
-          formControlName="password"
-          nz-input
-          type="password"
-          placeholder="Password"
-        />
-      </nz-input-group>
-      <nz-form-explain
-        *ngIf="
-          validateForm.get('password')?.dirty &&
-          validateForm.get('password')?.errors
-        "
-        >Please input your Password!</nz-form-explain
-      >
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-control>
-      <button nz-button nzType="primary" [disabled]="!validateForm.valid">
-        Log in
-      </button>
-    </nz-form-control>
-  </nz-form-item>
+<div nz-row>
+  <div nz-col nzSpan="2" [nzMd]="16"></div>
+  <div nz-col nzSpan="20" [nzMd]="4">
+    <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
+      <nz-form-item>
+        <nz-form-control *ngIf="!isUser">
+          <nz-input-group>
+            <input formControlName="fullName" nz-input placeholder="Name" />
+          </nz-input-group>
+          <nz-form-explain
+            *ngIf="
+              validateForm.get('fullName')?.dirty &&
+              validateForm.get('fullName')?.errors
+            "
+            >You don't have a name?!!</nz-form-explain
+          >
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-input-group [nzPrefix]="prefixUser">
+            <input formControlName="userName" nz-input placeholder="Username" />
+          </nz-input-group>
+          <nz-form-explain
+            *ngIf="
+              validateForm.get('userName')?.dirty &&
+              validateForm.get('userName')?.errors
+            "
+            >Please input your username!</nz-form-explain
+          >
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <nz-input-group [nzPrefix]="prefixLock">
+            <input
+              formControlName="password"
+              nz-input
+              type="password"
+              placeholder="Password"
+            />
+          </nz-input-group>
+          <nz-form-explain
+            *ngIf="
+              validateForm.get('password')?.dirty &&
+              validateForm.get('password')?.errors
+            "
+            >Please input your Password!</nz-form-explain
+          >
+        </nz-form-control>
+      </nz-form-item>
+      <nz-form-item>
+        <nz-form-control>
+          <button nz-button nzType="primary" [disabled]="!validateForm.valid">
+            Log in
+          </button>
+        </nz-form-control>
+      </nz-form-item>
 
-  <p *ngIf="!isUser">
-    Already a member? <span (click)="switchForm()">Login</span>
-  </p>
-  <p *ngIf="isUser">Not a member? <span (click)="switchForm()">SignUp</span></p>
-</form>
-<ng-template #prefixUser><em nz-icon type="user"></em></ng-template>
-<ng-template #prefixLock><em nz-icon type="lock"></em></ng-template>
+      <p *ngIf="!isUser">
+        Already a member?
+        <span class="login-link" (click)="switchForm()">Login</span>
+      </p>
+      <p *ngIf="isUser">
+        Not a member?
+        <span (click)="switchForm()" class="login-link">SignUp</span>
+      </p>
+    </form>
+    <ng-template #prefixUser><em nz-icon type="user"></em></ng-template>
+    <ng-template #prefixLock><em nz-icon type="lock"></em></ng-template>
+  </div>
+</div>

@@ -19,6 +19,7 @@ import * as firebase from 'firebase/app';
   styleUrls: ['./chats.component.scss']
 })
 export class ChatsComponent implements OnInit {
+  public onChats = true;
   private isNewConversation: boolean;
   public messages$: Observable<any>;
 
@@ -55,6 +56,7 @@ export class ChatsComponent implements OnInit {
     this.ar.queryParamMap.subscribe((data: any) => {
       this.queryParams = data.params;
       if ('uId' in this.queryParams) {
+        this.onChats = false;
         this.isNewConversation = true;
         this.chatKey = this.myProfile.key + this.queryParams.uId;
         this.mockerUId = this.queryParams.uId;
@@ -62,6 +64,7 @@ export class ChatsComponent implements OnInit {
 
         this.getMessages();
       } else if ('chatId' in this.queryParams) {
+        this.onChats = false;
         this.isNewConversation = false;
         this.chatKey = this.queryParams.chatId;
 
@@ -78,6 +81,8 @@ export class ChatsComponent implements OnInit {
           .subscribe();
 
         this.getMessages();
+      } else {
+        this.onChats = true;
       }
     });
   }
