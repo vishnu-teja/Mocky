@@ -32,7 +32,7 @@ export class ChatsComponent implements OnInit {
 
   public myProfile: User;
 
-  private mockerProfile: User;
+  public mockerProfile: User;
 
   private chatKey: string;
 

@@ -15,7 +15,6 @@ import { HttpClientModule } from '@angular/common/http';
 import { registerLocaleData } from '@angular/common';
 import en from '@angular/common/locales/en';
 import { SignInComponent } from './components/sign-in/sign-in.component';
-import { environment } from 'src/environments/environment';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -23,6 +22,8 @@ import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { ProfileComponent } from './components/profile/profile.component';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 registerLocaleData(en);
 
@@ -46,7 +47,10 @@ registerLocaleData(en);
     AngularFirestoreModule, // firestore
     AngularFireAuthModule, // auth
     AngularFireStorageModule, // storage
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: environment.production
+    })
   ],
   providers: [{ provide: NZ_I18N, useValue: en_US }],
   bootstrap: [AppComponent]

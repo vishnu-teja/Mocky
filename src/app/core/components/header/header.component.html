@@ -1,9 +1,12 @@
 <nz-header>
   <div nz-row>
-    <div nz-col nzSpan="0" [nzMd]="6" class="logo"></div>
+    <div nz-col nzSpan="0" [nzMd]="6"></div>
     <div nz-col nzSpan="24" [nzMd]="12">
-      <div nz-row *ngIf="user">
-        <div nz-col nzSpan="21">
+      <div nz-row>
+        <div nz-col nzSpan="3">
+          <img class="logo" src="assets/icons/android-192x192.png" alt="logo" />
+        </div>
+        <div nz-col nzSpan="18" *ngIf="user">
           <input
             placeholder="search mockers"
             nz-input
@@ -22,7 +25,7 @@
           </nz-autocomplete>
         </div>
 
-        <div nz-col nzSpan="3" class="user-icon">
+        <div nz-col nzSpan="3" class="user-icon" *ngIf="user">
           <nz-dropdown>
             <a nz-dropdown>
               <nz-avatar
