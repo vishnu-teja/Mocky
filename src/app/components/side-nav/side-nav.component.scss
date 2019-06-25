@@ -1,0 +1,10 @@
+.router-link-active {
+  background: #001529;
+  ::ng-deep .ant-list-item-meta-title {
+    color: white;
+  }
+}
+
+.ant-badge {
+  float: right;
+}

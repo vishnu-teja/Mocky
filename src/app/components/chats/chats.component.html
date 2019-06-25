@@ -1,23 +1,53 @@
-<div>
-  <p *ngFor="let msg of messages$ | async">
-    {{ msg.message }}
-  </p>
-</div>
+<div nz-row>
+  <div nz-col nzSpan="6"></div>
+  <div nz-col nzSpan="12">
+    <div nz-row>
+      <div nz-col nzSpan="8">
+        <nz-sider>
+          <app-side-nav></app-side-nav>
+        </nz-sider>
+      </div>
 
-<div class="message">
-  <div nz-row>
-    <div nz-col nzSpan="23">
-      <textarea
-        nz-input
-        placeholder="type message here..."
-        [(ngModel)]="message"
-        nzAutosize
-      ></textarea>
-    </div>
-    <div nz-col nzSpan="1">
-      <button nz-button nzType="primary" nzShape="circle">
-        <em nz-icon type="arrow-right" (click)="sendMsg()"></em>
-      </button>
+      <div nz-col nzSpan="16" class="chats">
+        <div *ngFor="let msg of messages$ | async" nz-row>
+          <div
+            [ngClass]="[
+              msg.sentBy === myProfile.key ? 'pull-right' : 'pull-left',
+              'chat-text'
+            ]"
+            nz-col
+          >
+            {{ decryptMsg(msg.message) }}
+          </div>
+          <p
+            [ngClass]="[
+              msg.sentBy === myProfile.key ? 'date-right' : 'date-left'
+            ]"
+            nz-col
+          >
+            {{ dateFormatter(msg.date) }}
+          </p>
+        </div>
+
+        <div class="message">
+          <div nz-row>
+            <div nz-col nzSpan="23">
+              <textarea
+                nz-input
+                placeholder="type message here..."
+                [(ngModel)]="message"
+                nzAutosize
+              ></textarea>
+            </div>
+            <div nz-col nzSpan="1">
+              <button nz-button nzType="primary" nzShape="circle">
+                <em nz-icon type="arrow-right" (click)="sendMsg()"></em>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
+  <div nz-col nzSpan="6"></div>
 </div>

@@ -9,15 +9,13 @@
   >
     <nz-card-meta
       [nzAvatar]="avatarTemplate"
-      nzTitle="{{ profile?.name }}"
+      nzTitle="{{ profile?.fullName }}"
       nzDescription="@{{ profile?.userName }}"
     ></nz-card-meta>
   </nz-skeleton>
 </nz-card>
 <ng-template #avatarTemplate>
-  <nz-avatar
-    nzSrc="https://image.flaticon.com/icons/png/128/149/149071.png"
-  ></nz-avatar>
+  <nz-avatar nzSrc="profile.imageLink"></nz-avatar>
 </ng-template>
 <ng-template #actionManage>
   <em nz-icon type="user-add"></em>

@@ -1,5 +1,51 @@
 .message {
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  width: 100%;
+  width: 32%; // change it
+}
+
+.chats {
+  display: flex;
+  flex-direction: column-reverse;
+  float: left;
+  overflow-y: auto;
+  height: 93vh;
+  padding-bottom: 4%;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.chat-text {
+  // border: 1px solid;
+  margin: 10px;
+  background: skyblue;
+  // color: white;
+  max-width: 80%;
+  border-radius: 5px;
+  padding: 0px 5px 0px 5px;
+}
+
+.pull-right {
+  float: right;
+}
+.pull-left {
+  display: inline-block;
+  // width: 100%;
+  // text-align: left;
+}
+
+.date-right {
+  float: right;
+  font-size: 10px;
+  line-height: 44px;
+  margin: 0px;
+}
+
+.date-left {
+  display: inline;
+  font-size: 10px;
+  line-height: 44px;
+  margin: 0px;
 }

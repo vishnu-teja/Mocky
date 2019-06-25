@@ -9,7 +9,10 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { User } from './../../shared/models/user.model';
-
+import { CryptoService } from './../../services/crypto.service';
+import { tap } from 'rxjs/operators';
+import { AngularFireDatabase } from '@angular/fire/database';
+import * as firebase from 'firebase/app';
 @Component({
   selector: 'app-chats',
   templateUrl: './chats.component.html',
@@ -19,9 +22,18 @@ export class ChatsComponent implements OnInit {
   private isNewConversation: boolean;
   public messages$: Observable<any>;
 
+  private mockerUId: string;
+
+  private myProfileMock$: any;
+  private mockerProfileMock$: any;
+
   public message: string;
 
-  private myProfile: User;
+  public myProfile: User;
+
+  private mockerProfile: User;
+
+  private chatKey: string;
 
   private queryParams;
 
@@ -29,7 +41,9 @@ export class ChatsComponent implements OnInit {
     private us: UserService,
     private r: Router,
     private ar: ActivatedRoute,
-    private fs: AngularFirestore
+    private fs: AngularFirestore,
+    private cs: CryptoService,
+    private fb: AngularFireDatabase
   ) {}
 
   ngOnInit() {
@@ -39,31 +53,101 @@ export class ChatsComponent implements OnInit {
 
   private getChatId() {
     this.ar.queryParamMap.subscribe((data: any) => {
-      let key;
       this.queryParams = data.params;
       if ('uId' in this.queryParams) {
         this.isNewConversation = true;
-        key = this.myProfile.key + this.queryParams.uId;
-      } else {
-        this.isNewConversation = false;
-        key = this.queryParams.chatId;
-      }
+        this.chatKey = this.myProfile.key + this.queryParams.uId;
+        this.mockerUId = this.queryParams.uId;
+        this.setProfiles(true);
 
-      this.messages$ = this.fs
-        .collection(DB_COLLECTIONS.CHATS)
-        .doc(key)
-        .collection('conversations')
-        .valueChanges();
+        this.getMessages();
+      } else if ('chatId' in this.queryParams) {
+        this.isNewConversation = false;
+        this.chatKey = this.queryParams.chatId;
+
+        this.fs
+          .collection(DB_COLLECTIONS.CHATS)
+          .doc(this.chatKey)
+          .valueChanges()
+          .pipe(
+            tap((c: any) => {
+              this.mockerUId = c.users.find(u => u !== this.myProfile.key);
+              this.setProfiles(false);
+            })
+          )
+          .subscribe();
+
+        this.getMessages();
+      }
     });
   }
 
-  private createChat(key: string, msg: object): void {
+  private setProfiles(newChat: boolean) {
+    this.fs
+      .collection(DB_COLLECTIONS.USERS)
+      .doc(this.mockerUId)
+      .valueChanges()
+      .pipe(
+        tap((u: User) => {
+          this.mockerProfile = u;
+
+          this.myProfileMock$ = this.fs
+            .collection(DB_COLLECTIONS.USERS)
+            .doc(this.myProfile.key)
+            .collection(DB_COLLECTIONS.MOCKERS)
+            .doc(this.mockerProfile.key);
+          this.mockerProfileMock$ = this.fs
+            .collection(DB_COLLECTIONS.USERS)
+            .doc(this.mockerProfile.key)
+            .collection(DB_COLLECTIONS.MOCKERS)
+            .doc(this.myProfile.key);
+
+          this.myProfileMock$.update({ newMessageCount: 0 });
+
+          if (newChat) {
+            this.createChat(this.chatKey);
+
+            const msg: Message = {
+              message: this.cs.set(this.chatKey, 'hello!'),
+              sentBy: this.myProfile.key,
+              date: new Date().toString()
+            };
+
+            this.updateChat(this.chatKey, msg);
+
+            this.setInProfile(
+              this.chatKey,
+              this.mockerProfile,
+              this.myProfileMock$
+            );
+
+            this.setInProfile(
+              this.chatKey,
+              this.myProfile,
+              this.mockerProfileMock$
+            );
+          }
+        })
+      )
+      .subscribe();
+  }
+
+  public getMessages() {
+    this.messages$ = this.fs
+      .collection(DB_COLLECTIONS.CHATS)
+      .doc(this.chatKey)
+      .collection('conversations', ref => ref.orderBy('date', 'desc'))
+      .valueChanges();
+
+    const objDiv: any = document.getElementsByClassName('chats');
+    objDiv.scrollTop = objDiv.scrollHeight;
+  }
+
+  private createChat(key: string) {
     this.fs
       .collection(DB_COLLECTIONS.CHATS)
       .doc(key)
-      .collection(DB_COLLECTIONS.CONVERSATIONS)
-      .add(msg);
-    this.isNewConversation = false;
+      .set({ users: [this.myProfile.key, this.mockerProfile.key] });
   }
 
   private updateChat(key: string, msg: object): void {
@@ -76,31 +160,64 @@ export class ChatsComponent implements OnInit {
 
   public sendMsg() {
     const msg: Message = {
-      message: this.message,
+      message: this.cs.set(this.chatKey, this.message),
       sentBy: this.myProfile.key,
       date: new Date().toString()
     };
 
-    if ('uId' in this.queryParams && this.isNewConversation) {
-      const key = this.myProfile.key + this.queryParams.uId;
-      this.createChat(key, msg);
-      this.updateProfile(key, this.queryParams.uId, this.myProfile.key);
+    // if ('uId' in this.queryParams && this.isNewConversation) {
+    //   const key = this.myProfile.key + this.queryParams.uId;
+    //   this.createChat(key, msg);
 
-      this.updateProfile(key, this.myProfile.key, this.queryParams.uId);
-    } else {
-      const key =
-        this.queryParams.chatId || this.myProfile.key + this.queryParams.uId;
-      this.updateChat(key, msg);
-    }
+    //   this.setInProfile(key, this.mockerProfile, this.myProfile.key);
+
+    //   this.setInProfile(key, this.myProfile, this.mockerProfile.key);
+    // } else {
+    const key =
+      this.queryParams.chatId || this.myProfile.key + this.queryParams.uId;
+    this.updateChat(key, msg);
+    // }
+    this.updateProfile();
     this.message = null;
   }
 
-  private updateProfile(key: string, uId: string, email: string) {
-    this.fs
-      .collection(DB_COLLECTIONS.USERS)
-      .doc(email)
-      .collection('mockers')
-      .doc(uId)
-      .set({ chatId: key });
+  public decryptMsg(msg: string) {
+    return this.cs.get(this.chatKey, msg);
+  }
+
+  private setInProfile(key: string, profile: User, profile$: any) {
+    const mocker: Mocker = {
+      chatId: key,
+      mockerName: profile.fullName,
+      imageLink: profile.imageLink,
+      newMessageCount: 1,
+      lastUpdated: new Date().toString()
+    };
+
+    // this.fs
+    //   .collection(DB_COLLECTIONS.USERS)
+    //   .doc(uId)
+    //   .collection(DB_COLLECTIONS.MOCKERS)
+    //   .doc(profile.key)
+    profile$.set(mocker);
+  }
+  private updateProfile() {
+    this.mockerProfileMock$
+      // this.fs
+      //   .collection(DB_COLLECTIONS.USERS)
+      //   .doc(this.mockerProfile.key)
+      //   .collection(DB_COLLECTIONS.MOCKERS)
+      //   .doc(this.myProfile.key)
+
+      .update({
+        newMessageCount: firebase.firestore.FieldValue.increment(1),
+        lastUpdated: new Date().toString()
+      });
+
+    this.myProfileMock$.update({ lastUpdated: new Date().toString() });
+  }
+
+  public dateFormatter(date: string) {
+    return new Date(date).toLocaleTimeString('en-US', { hour12: false });
   }
 }

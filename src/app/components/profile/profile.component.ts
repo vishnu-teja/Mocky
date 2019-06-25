@@ -50,7 +50,7 @@ export class ProfileComponent implements OnInit {
     this.fs
       .collection(DB_COLLECTIONS.USERS)
       .doc(this.myProfile.key)
-      .collection('mockers')
+      .collection(DB_COLLECTIONS.MOCKERS)
       .doc(this.profile.key)
       .valueChanges()
       .subscribe((m: Mocker) => {

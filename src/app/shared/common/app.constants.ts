@@ -6,7 +6,8 @@ export const MESSAGE_TYPE = {
 export const DB_COLLECTIONS = {
   USERS: '/users',
   CHATS: '/chats',
-  CONVERSATIONS: '/conversations'
+  CONVERSATIONS: '/conversations',
+  MOCKERS: '/mockers'
 };
 
 export const ROUTER_LINKS = {

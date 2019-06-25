@@ -3,12 +3,13 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { UserService } from './../../services/user.service';
 import {
   DB_COLLECTIONS,
-  SESSION_DATA
+  SESSION_DATA,
+  ROUTER_LINKS
 } from 'src/app/shared/common/app.constants';
 import { NzNotificationService } from 'ng-zorro-antd';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UserForm, User } from './../../shared/models/user.model';
-import { Mocker } from 'src/app/shared/models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-in',
@@ -22,7 +23,8 @@ export class SignInComponent implements OnInit {
     private fb: FormBuilder,
     private us: UserService,
     private notification: NzNotificationService,
-    private fs: AngularFirestore
+    private fs: AngularFirestore,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -68,7 +70,8 @@ export class SignInComponent implements OnInit {
     const newUser: User = {
       fullName: user.fullName,
       userName: user.userName,
-      mockMail: email
+      mockMail: email,
+      imageLink: 'https://image.flaticon.com/icons/png/128/149/149071.png'
     };
     this.us
       .createUserWithEmail(email, user.password)
@@ -106,5 +109,6 @@ export class SignInComponent implements OnInit {
   setInSession(user) {
     sessionStorage.setItem(SESSION_DATA.USER, JSON.stringify(user));
     this.us.emitUserData.next(user);
+    this.router.navigate([ROUTER_LINKS.CHATS]);
   }
 }

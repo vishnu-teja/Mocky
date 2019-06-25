@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { of, BehaviorSubject } from 'rxjs';
 import { SESSION_DATA } from '../shared/common/app.constants';
 import { FirebaseService } from './firebase.service';
+import { AngularFirestore } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class UserService {
   constructor(
     private afAuth: AngularFireAuth,
     private db: AngularFireDatabase,
-    private fs: FirebaseService
+    private fs: AngularFirestore
   ) {
     const user = JSON.parse(sessionStorage.getItem(SESSION_DATA.USER));
     if (user) {
