@@ -7,6 +7,7 @@ import {
   DB_COLLECTIONS
 } from 'src/app/shared/common/app.constants';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { User } from './../../../shared/models/user.model';
 
 @Component({
   selector: 'app-header',
@@ -14,11 +15,11 @@ import { AngularFirestore } from '@angular/fire/firestore';
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  public user: Mocker;
+  public user: User;
 
-  public selectedUser: Mocker;
+  public selectedUser: User;
 
-  public users: Mocker[];
+  public users: User[];
 
   public searchText: string;
 
@@ -45,7 +46,7 @@ export class HeaderComponent implements OnInit {
           .endAt(this.searchText + '\uf8ff')
       )
       .valueChanges()
-      .subscribe((d: Mocker[]) => {
+      .subscribe((d: User[]) => {
         this.users = d;
       });
   }
@@ -60,5 +61,12 @@ export class HeaderComponent implements OnInit {
       this.us.emitUserData.next(null);
       this.router.navigate([ROUTER_LINKS.SIGN_IN]);
     });
+  }
+
+  public gotoProfile() {
+    this.router.navigate([ROUTER_LINKS.PROFILE, this.user.fullName]);
+  }
+  public gotoChats() {
+    this.router.navigate([ROUTER_LINKS.CHATS]);
   }
 }

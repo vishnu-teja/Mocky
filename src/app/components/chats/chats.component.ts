@@ -54,6 +54,7 @@ export class ChatsComponent implements OnInit {
 
   private getChatId() {
     this.ar.queryParamMap.subscribe((data: any) => {
+      this.message = null;
       this.queryParams = data.params;
       if ('uId' in this.queryParams) {
         this.onChats = false;
@@ -165,25 +166,18 @@ export class ChatsComponent implements OnInit {
 
   public sendMsg() {
     const msg: Message = {
-      message: this.cs.set(this.chatKey, this.message),
+      message: this.message ? this.cs.set(this.chatKey, this.message) : null,
       sentBy: this.myProfile.key,
       date: new Date().toString()
     };
 
-    // if ('uId' in this.queryParams && this.isNewConversation) {
-    //   const key = this.myProfile.key + this.queryParams.uId;
-    //   this.createChat(key, msg);
-
-    //   this.setInProfile(key, this.mockerProfile, this.myProfile.key);
-
-    //   this.setInProfile(key, this.myProfile, this.mockerProfile.key);
-    // } else {
     const key =
       this.queryParams.chatId || this.myProfile.key + this.queryParams.uId;
-    this.updateChat(key, msg);
-    // }
-    this.updateProfile();
-    this.message = null;
+    if (this.message) {
+      this.updateChat(key, msg);
+      this.updateProfile();
+      this.message = null;
+    }
   }
 
   public decryptMsg(msg: string) {
@@ -224,5 +218,16 @@ export class ChatsComponent implements OnInit {
 
   public dateFormatter(date: string) {
     return new Date(date).toLocaleTimeString('en-US', { hour12: false });
+  }
+
+  keyBoardEnter(event) {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      this.sendMsg();
+    }
+  }
+
+  onBack() {
+    this.r.navigate([ROUTER_LINKS.CHATS]);
   }
 }

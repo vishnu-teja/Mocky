@@ -47,17 +47,19 @@ export class ProfileComponent implements OnInit {
   }
 
   public startConversation() {
-    this.fs
-      .collection(DB_COLLECTIONS.USERS)
-      .doc(this.myProfile.key)
-      .collection(DB_COLLECTIONS.MOCKERS)
-      .doc(this.profile.key)
-      .valueChanges()
-      .subscribe((m: Mocker) => {
-        const isCoMocker =
-          m && m.chatId ? { chatId: m.chatId } : { uId: this.profile.key };
-        const obj = isCoMocker;
-        this.router.navigate([ROUTER_LINKS.CHATS], { queryParams: obj });
-      });
+    if (this.myProfile.key !== this.profile.key) {
+      this.fs
+        .collection(DB_COLLECTIONS.USERS)
+        .doc(this.myProfile.key)
+        .collection(DB_COLLECTIONS.MOCKERS)
+        .doc(this.profile.key)
+        .valueChanges()
+        .subscribe((m: Mocker) => {
+          const isCoMocker =
+            m && m.chatId ? { chatId: m.chatId } : { uId: this.profile.key };
+          const obj = isCoMocker;
+          this.router.navigate([ROUTER_LINKS.CHATS], { queryParams: obj });
+        });
+    }
   }
 }

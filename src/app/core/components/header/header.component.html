@@ -1,29 +1,51 @@
 <nz-header>
   <div nz-row>
-    <div nz-col nzSpan="1" class="logo"></div>
-    <div nz-col nzSpan="20">
-      <input
-        placeholder="search mockers"
-        nz-input
-        [(ngModel)]="searchText"
-        [nzAutocomplete]="auto"
-        (keyup)="searchUser()"
-      />
-      <nz-autocomplete nzBackfill #auto>
-        <nz-auto-option
-          *ngFor="let user of users"
-          [nzValue]="user.userName"
-          (selectionChange)="routeToUserProfile($event)"
-        >
-          {{ user.userName }}
-        </nz-auto-option>
-      </nz-autocomplete>
+    <div nz-col nzSpan="0" [nzMd]="6" class="logo"></div>
+    <div nz-col nzSpan="24" [nzMd]="12">
+      <div nz-row *ngIf="user">
+        <div nz-col nzSpan="21">
+          <input
+            placeholder="search mockers"
+            nz-input
+            [(ngModel)]="searchText"
+            [nzAutocomplete]="auto"
+            (keyup)="searchUser()"
+          />
+          <nz-autocomplete nzBackfill #auto>
+            <nz-auto-option
+              *ngFor="let user of users"
+              [nzValue]="user.userName"
+              (selectionChange)="routeToUserProfile($event)"
+            >
+              {{ user.userName }}
+            </nz-auto-option>
+          </nz-autocomplete>
+        </div>
+
+        <div nz-col nzSpan="3" class="user-icon">
+          <nz-dropdown>
+            <a nz-dropdown>
+              <nz-avatar
+                [nzShape]="'square'"
+                [nzSrc]="user?.imageLink"
+              ></nz-avatar>
+            </a>
+            <ul nz-menu nzSelectable>
+              <li nz-menu-item (click)="gotoProfile()">
+                <a>my profile</a>
+              </li>
+              <li nz-menu-item (click)="gotoChats()">
+                <a>chats</a>
+              </li>
+              <li nz-menu-item (click)="logout()">
+                <a>logout</a>
+              </li>
+            </ul>
+          </nz-dropdown>
+        </div>
+      </div>
     </div>
 
-    <div nz-col nzSpan="1">
-      <button nz-button nzType="dashed" *ngIf="user" (click)="logout()">
-        logout
-      </button>
-    </div>
+    <div nz-col nzSpan="0" [nzMd]="6"></div>
   </div>
 </nz-header>

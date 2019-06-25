@@ -1,3 +1,9 @@
 nz-content {
   min-height: 93vh;
 }
+
+@media only screen and (max-width: 600px) {
+  nz-content {
+    min-height: 90vh;
+  }
+}
