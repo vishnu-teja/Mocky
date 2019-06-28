@@ -95,15 +95,21 @@ export class SignInComponent implements OnInit {
   }
 
   getUser(user: UserForm) {
-    this.fs
-      .collection(DB_COLLECTIONS.USERS, ref =>
-        ref.where('userName', '==', user.userName)
-      )
-      .valueChanges()
-      .subscribe(data => {
-        console.log(data);
-        this.setInSession(data[0]);
-      });
+    const email = user.userName + '@mocky.com';
+    this.us
+      .signInWithEmail(email, user.password)
+      .then(result => {
+        this.fs
+          .collection(DB_COLLECTIONS.USERS, ref =>
+            ref.where('userName', '==', user.userName)
+          )
+          .valueChanges()
+          .subscribe(data => {
+            console.log(data);
+            this.setInSession(data[0]);
+          });
+      })
+      .catch(err => {});
   }
 
   setInSession(user) {

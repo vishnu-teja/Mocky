@@ -44,10 +44,10 @@
           <div nz-row>
             <div nz-col class="text-area" nzSpan="21" [nzMd]="23">
               <textarea
+                #textArea
                 nz-input
                 placeholder="type message here..."
                 [(ngModel)]="message"
-                (keyup)="keyBoardEnter($event)"
                 nzAutosize
               ></textarea>
             </div>

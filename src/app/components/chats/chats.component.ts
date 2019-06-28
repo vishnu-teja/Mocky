@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Message } from '../../shared/models/message.model';
 import { MESSAGE_TYPE, ROUTER_LINKS } from '../../shared/common/app.constants';
 import { Mocker } from 'src/app/shared/models/user.model';
@@ -19,6 +19,7 @@ import * as firebase from 'firebase/app';
   styleUrls: ['./chats.component.scss']
 })
 export class ChatsComponent implements OnInit {
+  @ViewChild('textArea') textArea;
   public onChats = true;
   private isNewConversation: boolean;
   public messages$: Observable<any>;
@@ -177,6 +178,8 @@ export class ChatsComponent implements OnInit {
       this.updateChat(key, msg);
       this.updateProfile();
       this.message = null;
+      console.log(this.textArea);
+      this.textArea.nativeElement.focus();
     }
   }
 
@@ -193,25 +196,13 @@ export class ChatsComponent implements OnInit {
       lastUpdated: new Date().toString()
     };
 
-    // this.fs
-    //   .collection(DB_COLLECTIONS.USERS)
-    //   .doc(uId)
-    //   .collection(DB_COLLECTIONS.MOCKERS)
-    //   .doc(profile.key)
     profile$.set(mocker);
   }
   private updateProfile() {
-    this.mockerProfileMock$
-      // this.fs
-      //   .collection(DB_COLLECTIONS.USERS)
-      //   .doc(this.mockerProfile.key)
-      //   .collection(DB_COLLECTIONS.MOCKERS)
-      //   .doc(this.myProfile.key)
-
-      .update({
-        newMessageCount: firebase.firestore.FieldValue.increment(1),
-        lastUpdated: new Date().toString()
-      });
+    this.mockerProfileMock$.update({
+      newMessageCount: firebase.firestore.FieldValue.increment(1),
+      lastUpdated: new Date().toString()
+    });
 
     this.myProfileMock$.update({ lastUpdated: new Date().toString() });
   }

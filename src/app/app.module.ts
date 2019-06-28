@@ -24,6 +24,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import { AngularFireMessagingModule } from '@angular/fire/messaging';
 
 registerLocaleData(en);
 
@@ -47,6 +48,7 @@ registerLocaleData(en);
     AngularFirestoreModule, // firestore
     AngularFireAuthModule, // auth
     AngularFireStorageModule, // storage
+    AngularFireMessagingModule,
     AngularFireDatabaseModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production

@@ -1,7 +1,8 @@
 .message {
-  position: absolute;
+  position: fixed;
   bottom: 0;
-  width: 100%; // change it
+  width: 35%;
+  padding-bottom: 3px;
 }
 
 .chats {
@@ -18,6 +19,9 @@
   .chats {
     height: 85vh;
     margin-top: 33px;
+  }
+  .message {
+    width: 100%;
   }
 }
 
