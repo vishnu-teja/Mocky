@@ -57,7 +57,7 @@ export class HeaderComponent implements OnInit {
 
   public logout() {
     this.us.logout().then(() => {
-      localStorage.clear();
+      sessionStorage.clear();
       this.us.emitUserData.next(null);
       this.router.navigate([ROUTER_LINKS.SIGN_IN]);
     });
