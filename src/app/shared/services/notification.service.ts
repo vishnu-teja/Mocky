@@ -32,6 +32,8 @@ export class NotificationService {
       this.afs
         .collection('/fcmTokens')
         .doc(user.uid)
+        .collection('tokens')
+        .doc(token)
         .set({ token });
     });
   }

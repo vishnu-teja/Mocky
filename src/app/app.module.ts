@@ -49,7 +49,7 @@ registerLocaleData(en);
     AngularFireAuthModule, // auth
     AngularFireStorageModule, // storage
     AngularFireMessagingModule,
-    AngularFireDatabaseModule,
+    // AngularFireDatabaseModule,
     ServiceWorkerModule.register('ngsw-worker.js', {
       enabled: environment.production
     })

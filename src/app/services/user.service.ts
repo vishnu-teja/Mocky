@@ -13,12 +13,8 @@ import * as firebase from 'firebase/app';
 })
 export class UserService {
   public emitUserData = new BehaviorSubject(null);
-  constructor(
-    private afAuth: AngularFireAuth,
-    private db: AngularFireDatabase,
-    private fs: AngularFirestore
-  ) {
-    const user = JSON.parse(sessionStorage.getItem(SESSION_DATA.USER));
+  constructor(private afAuth: AngularFireAuth) {
+    const user = JSON.parse(localStorage.getItem(SESSION_DATA.USER));
     if (user) {
       this.emitUserData.next(user);
     }

@@ -10,6 +10,7 @@ import { NzNotificationService } from 'ng-zorro-antd';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { UserForm, User } from './../../shared/models/user.model';
 import { Router } from '@angular/router';
+import { NotificationService } from 'src/app/shared/services/notification.service';
 
 @Component({
   selector: 'app-sign-in',
@@ -24,7 +25,8 @@ export class SignInComponent implements OnInit {
     private us: UserService,
     private notification: NzNotificationService,
     private fs: AngularFirestore,
-    private router: Router
+    private router: Router,
+    private nf: NotificationService
   ) {}
 
   ngOnInit() {
@@ -113,8 +115,10 @@ export class SignInComponent implements OnInit {
   }
 
   setInSession(user) {
-    sessionStorage.setItem(SESSION_DATA.USER, JSON.stringify(user));
+    localStorage.setItem(SESSION_DATA.USER, JSON.stringify(user));
     this.us.emitUserData.next(user);
+    this.nf.requestPermission();
+    this.nf.receiveMessage();
     this.router.navigate([ROUTER_LINKS.CHATS]);
   }
 }

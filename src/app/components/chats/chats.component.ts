@@ -44,8 +44,7 @@ export class ChatsComponent implements OnInit {
     private r: Router,
     private ar: ActivatedRoute,
     private fs: AngularFirestore,
-    private cs: CryptoService,
-    private fb: AngularFireDatabase
+    private cs: CryptoService
   ) {}
 
   ngOnInit() {
@@ -117,7 +116,10 @@ export class ChatsComponent implements OnInit {
             const msg: Message = {
               message: this.cs.set(this.chatKey, 'hello!'),
               sentBy: this.myProfile.key,
-              date: new Date().toString()
+              date: new Date().toString(),
+              senderName: this.myProfile.fullName,
+              senderImage: this.myProfile.imageLink,
+              recievedBy: this.mockerProfile.key
             };
 
             this.updateChat(this.chatKey, msg);

@@ -1,6 +1,5 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { DocumentSnapshot } from 'firebase-functions/lib/providers/firestore';
 
 // // Start writing Firebase Functions
 // // https://firebase.google.com/docs/functions/typescript
@@ -14,11 +13,16 @@ export const notifyUser = functions.firestore
   .onCreate((change, context) => {
     const text: any = change.data();
 
+    const actionUrl =
+      'https://mockychat.firebaseapp.com/chats/' + context.params.chatId;
+
     const payload = {
       notification: {
         title: 'New Message',
         body: 'you have a new message from ' + text.senderName,
-        icon: text.senderImage
+        icon: text.senderImage,
+        sound: 'default',
+        click_action: actionUrl
       }
     };
 
@@ -28,18 +32,19 @@ export const notifyUser = functions.firestore
       .firestore()
       .collection('fcmTokens')
       .doc(recievedBy)
+      .collection('tokens')
       .get()
-      .then((d: DocumentSnapshot) => {
-        console.log(d.data());
-        console.log(d.exists);
-        const data: any = d.data();
-        const token: any = Object.values(data) || [];
-        console.log('token', token);
-        return admin
-          .messaging()
-          .sendToDevice(token, payload)
-          .catch(err => {
-            console.log(err);
-          });
+      .then((d: any) => {
+        d.forEach((doc: any) => {
+          const data: any = doc.data();
+          const token: any = Object.values(data) || [];
+          console.log('token', token);
+          return admin
+            .messaging()
+            .sendToDevice(token, payload)
+            .catch(err => {
+              console.log(err);
+            });
+        });
       });
   });

@@ -7,10 +7,7 @@ import { NotificationService } from './shared/services/notification.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit {
-  constructor(private nf: NotificationService) {}
+  constructor() {}
 
-  ngOnInit() {
-    this.nf.requestPermission();
-    this.nf.receiveMessage();
-  }
+  ngOnInit() {}
 }
