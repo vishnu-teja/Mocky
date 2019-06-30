@@ -28,10 +28,11 @@ export class NotificationService {
       if (!user) {
         return;
       }
-      console.log(user);
-      const data = {};
-      data[user.uid] = token;
-      this.afs.collection('/fcmTokens').add(data);
+
+      this.afs
+        .collection('/fcmTokens')
+        .doc(user.uid)
+        .set({ token });
     });
   }
 

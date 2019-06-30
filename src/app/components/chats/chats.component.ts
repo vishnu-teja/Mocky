@@ -169,6 +169,9 @@ export class ChatsComponent implements OnInit {
     const msg: Message = {
       message: this.message ? this.cs.set(this.chatKey, this.message) : null,
       sentBy: this.myProfile.key,
+      senderName: this.myProfile.fullName,
+      senderImage: this.myProfile.imageLink,
+      recievedBy: this.mockerProfile.key,
       date: new Date().toString()
     };
 
