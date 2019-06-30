@@ -10,7 +10,7 @@ const routes: Routes = [
 
   { path: '', redirectTo: 'signIn', pathMatch: 'full' },
 
-  { path: 'signIn', component: SignInComponent },
+  { path: 'signIn', component: SignInComponent, canActivate: [AccessGuard] },
   {
     path: 'profile/:userName',
     component: ProfileComponent,

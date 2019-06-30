@@ -30,6 +30,9 @@ export class SignInComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    if (this.us.emitUserData.getValue()) {
+      this.router.navigate([ROUTER_LINKS.CHATS]);
+    }
     this.createForm();
   }
 
@@ -111,7 +114,9 @@ export class SignInComponent implements OnInit {
             this.setInSession(data[0]);
           });
       })
-      .catch(err => {});
+      .catch(err => {
+        this.notification.error('Error', err);
+      });
   }
 
   setInSession(user) {

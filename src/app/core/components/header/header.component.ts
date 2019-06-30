@@ -36,23 +36,30 @@ export class HeaderComponent implements OnInit {
   }
 
   public searchUser() {
-    console.log(this.searchText);
-
-    this.fs
-      .collection('users', ref =>
-        ref
-          .orderBy('userName')
-          .startAt(this.searchText)
-          .endAt(this.searchText + '\uf8ff')
-      )
-      .valueChanges()
-      .subscribe((d: User[]) => {
-        this.users = d;
-      });
+    console.log(this.router.url);
+    if (!this.searchText) {
+      this.users = [];
+    } else {
+      this.fs
+        .collection('users', ref =>
+          ref
+            .orderBy('userName')
+            .startAt(this.searchText)
+            .endAt(this.searchText + '\uf8ff')
+        )
+        .valueChanges()
+        .subscribe((d: User[]) => {
+          this.users = d;
+        });
+    }
   }
 
   public routeToUserProfile(event) {
-    this.router.navigate([ROUTER_LINKS.PROFILE, event.source.nzValue]);
+    this.router
+      .navigate([ROUTER_LINKS.PROFILE, event.source.nzValue])
+      .then(() => {
+        this.searchText = '';
+      });
   }
 
   public logout() {

@@ -22,7 +22,7 @@ export class UserService {
 
   public signInWithEmail(email, password) {
     return this.afAuth.auth
-      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
       .then(() => {
         return this.afAuth.auth.signInWithEmailAndPassword(email, password);
       });
@@ -30,7 +30,7 @@ export class UserService {
 
   public createUserWithEmail(email, password) {
     return this.afAuth.auth
-      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
       .then(() => {
         return this.afAuth.auth.createUserWithEmailAndPassword(email, password);
       });

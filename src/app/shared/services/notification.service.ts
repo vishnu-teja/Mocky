@@ -5,6 +5,9 @@ import { AngularFireAuth } from '@angular/fire/auth';
 import { take } from 'rxjs/operators';
 import { AngularFireMessaging } from '@angular/fire/messaging';
 import { AngularFirestore } from '@angular/fire/firestore';
+import { NzNotificationService } from 'ng-zorro-antd';
+import { Route } from '@angular/compiler/src/core';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +17,9 @@ export class NotificationService {
   constructor(
     private angularFireAuth: AngularFireAuth,
     private angularFireMessaging: AngularFireMessaging,
-    private afs: AngularFirestore
+    private afs: AngularFirestore,
+    private notification: NzNotificationService,
+    private route: Router
   ) {
     this.angularFireMessaging.messaging.subscribe(messaging => {
       messaging.onMessage = messaging.onMessage.bind(messaging);
@@ -54,9 +59,15 @@ export class NotificationService {
    * hook method when new notification received in foreground
    */
   receiveMessage() {
-    this.angularFireMessaging.messages.subscribe(payload => {
+    this.angularFireMessaging.messages.subscribe((payload: any) => {
       console.log('new message received. ', payload);
-      this.currentMessage.next(payload);
+      if (payload.notification.click_action !== this.route.url) {
+        this.currentMessage.next(payload);
+      }
+      // this.notification.info(
+      //   payload.notification.title,
+      //   payload.notification.body
+      // );
     });
   }
 }
