@@ -23,6 +23,7 @@ export class ChatsComponent implements OnInit {
   public onChats = true;
   public messages$: Observable<any>;
   public loading = false;
+  private timeOut;
 
   private mockerUId: string;
 
@@ -176,7 +177,6 @@ export class ChatsComponent implements OnInit {
 
   public sendMsg() {
     if (this.message) {
-      debugger;
       const msg: Message = {
         message: this.message ? this.cs.set(this.chatKey, this.message) : null,
         sentBy: this.myProfile.key,
@@ -230,10 +230,18 @@ export class ChatsComponent implements OnInit {
   }
 
   keyBoardEnter(event) {
-    if (event.key === 'Enter') {
-      event.stopPropagation();
-      this.sendMsg();
-    }
+    clearTimeout(this.timeOut);
+    event.stopPropagation();
+    this.timeOut = setTimeout(() => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        if (this.message.length > 1) {
+          this.sendMsg();
+        } else {
+          this.message = null;
+        }
+      }
+    }, 400);
   }
 
   onBack() {
