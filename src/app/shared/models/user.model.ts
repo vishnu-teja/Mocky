@@ -13,7 +13,7 @@ export interface Mocker {
   imageLink: string;
   newMessageCount?: number;
   lastMessage?: string;
-  lastUpdated?: string;
+  lastUpdated?: object;
 }
 
 export interface UserForm {

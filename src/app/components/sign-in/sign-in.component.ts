@@ -19,6 +19,7 @@ import { NotificationService } from 'src/app/shared/services/notification.servic
 })
 export class SignInComponent implements OnInit {
   public isUser = true;
+  public loading = false;
   validateForm: FormGroup;
   constructor(
     private fb: FormBuilder,
@@ -30,9 +31,6 @@ export class SignInComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    if (this.us.emitUserData.getValue()) {
-      this.router.navigate([ROUTER_LINKS.CHATS]);
-    }
     this.createForm();
   }
 
@@ -55,6 +53,7 @@ export class SignInComponent implements OnInit {
   }
 
   submitForm(): void {
+    this.loading = true;
     for (const i of Object.keys(this.validateForm.controls)) {
       this.validateForm.controls[i].markAsDirty();
       this.validateForm.controls[i].updateValueAndValidity();
@@ -110,7 +109,6 @@ export class SignInComponent implements OnInit {
           )
           .valueChanges()
           .subscribe(data => {
-            console.log(data);
             this.setInSession(data[0]);
           });
       })
@@ -125,5 +123,6 @@ export class SignInComponent implements OnInit {
     this.nf.requestPermission();
     this.nf.receiveMessage();
     this.router.navigate([ROUTER_LINKS.CHATS]);
+    this.loading = false;
   }
 }

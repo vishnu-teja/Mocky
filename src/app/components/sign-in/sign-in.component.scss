@@ -2,3 +2,15 @@
   cursor: pointer;
   color: blue($color: #000000);
 }
+
+::ng-deep .loader {
+  text-align: center;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+  margin-bottom: 20px;
+  padding-top: 40vh;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  height: 100%;
+}

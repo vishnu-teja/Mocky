@@ -20,6 +20,21 @@
       </div>
       <div nz-col nzSpan="{{ onChats ? '0' : '24' }}" [nzMd]="16">
         <div class="chats">
+          <div *ngFor="let item of [1, 1, 1, 1, 1]">
+            <nz-skeleton
+              [nzLoading]="loading"
+              [nzActive]="true"
+              [nzParagraph]="{ rows: 1, width: '80%' }"
+            ></nz-skeleton>
+            <nz-skeleton
+              class="skeleton-right"
+              [nzLoading]="loading"
+              [nzActive]="true"
+              [nzTitle]="false"
+              [nzParagraph]="{ rows: 2, width: '100%' }"
+            ></nz-skeleton>
+          </div>
+
           <div *ngFor="let msg of messages$ | async" nz-row>
             <div
               [ngClass]="[
@@ -48,6 +63,7 @@
                 nz-input
                 placeholder="type message here..."
                 [(ngModel)]="message"
+                (keyup)="keyBoardEnter($event)"
                 nzAutosize
               ></textarea>
             </div>

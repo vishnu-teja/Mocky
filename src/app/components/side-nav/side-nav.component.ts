@@ -5,6 +5,7 @@ import { Mocker } from 'src/app/shared/models/user.model';
 import { User } from './../../shared/models/user.model';
 import { Observable } from 'rxjs';
 import { DB_COLLECTIONS } from 'src/app/shared/common/app.constants';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-side-nav',
@@ -12,7 +13,7 @@ import { DB_COLLECTIONS } from 'src/app/shared/common/app.constants';
   styleUrls: ['./side-nav.component.scss']
 })
 export class SideNavComponent implements OnInit {
-  private onLoad = true;
+  public loading = true;
   private myProfile: User;
   public chatList$: Observable<Mocker[]>;
 
@@ -30,6 +31,10 @@ export class SideNavComponent implements OnInit {
       .collection(DB_COLLECTIONS.MOCKERS, ref =>
         ref.orderBy('lastUpdated', 'desc')
       )
-      .valueChanges() as Observable<Mocker[]>).pipe();
+      .valueChanges() as Observable<Mocker[]>).pipe(
+      tap(() => {
+        this.loading = false;
+      })
+    );
   }
 }

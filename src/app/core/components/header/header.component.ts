@@ -8,6 +8,7 @@ import {
 } from 'src/app/shared/common/app.constants';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { User } from './../../../shared/models/user.model';
+import { AngularFireMessaging } from '@angular/fire/messaging';
 
 @Component({
   selector: 'app-header',
@@ -26,7 +27,8 @@ export class HeaderComponent implements OnInit {
   constructor(
     private us: UserService,
     private router: Router,
-    private fs: AngularFirestore
+    private fs: AngularFirestore,
+    private afs: AngularFireMessaging
   ) {}
 
   ngOnInit() {
@@ -36,7 +38,6 @@ export class HeaderComponent implements OnInit {
   }
 
   public searchUser() {
-    console.log(this.router.url);
     if (!this.searchText) {
       this.users = [];
     } else {
@@ -64,9 +65,23 @@ export class HeaderComponent implements OnInit {
 
   public logout() {
     this.us.logout().then(() => {
-      sessionStorage.clear();
-      this.us.emitUserData.next(null);
-      this.router.navigate([ROUTER_LINKS.SIGN_IN]);
+      localStorage.clear();
+      this.removePushNotifications();
+    });
+  }
+
+  private removePushNotifications() {
+    this.afs.getToken.subscribe(t => {
+      this.fs
+        .collection('fcmTokens')
+        .doc(this.user.key)
+        .collection('tokens')
+        .doc(t)
+        .delete()
+        .finally(() => {
+          this.us.emitUserData.next(null);
+          this.router.navigate([ROUTER_LINKS.SIGN_IN]);
+        });
     });
   }
 

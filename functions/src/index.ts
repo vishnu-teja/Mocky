@@ -14,7 +14,7 @@ export const notifyUser = functions.firestore
     const text: any = change.data();
 
     const actionUrl =
-      'https://mockychat.firebaseapp.com/chats/' + context.params.chatId;
+      'https://mockychat.firebaseapp.com/chats?chatId=' + context.params.chatId;
 
     const payload = {
       notification: {
@@ -38,7 +38,6 @@ export const notifyUser = functions.firestore
         d.forEach((doc: any) => {
           const data: any = doc.data();
           const token: any = Object.values(data) || [];
-          console.log('token', token);
           return admin
             .messaging()
             .sendToDevice(token, payload)

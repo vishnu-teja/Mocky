@@ -28,6 +28,9 @@ export class AccessGuard implements CanActivate {
       if (!user) {
         this.router.navigate([ROUTER_LINKS.SIGN_IN]);
         return false;
+      } else if (user && state.url === ROUTER_LINKS.SIGN_IN) {
+        this.router.navigate([ROUTER_LINKS.CHATS]);
+        return false;
       } else {
         return true;
       }

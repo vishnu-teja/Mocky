@@ -1,48 +1,39 @@
 <div>
-  <!-- <ul>
-    <li
-      [routerLink]="['/chats']"
-      [queryParams]="{ chatId: mocker.chatId }"
-      routerLinkActive="router-link-active"
-      *ngFor="let mocker of chatList$ | async"
+  <div *ngFor="let item of [1, 1, 1, 1, 1, 1, 1, 1]" class="skeleton">
+    <nz-skeleton
+      [nzAvatar]="true"
+      [nzActive]="true"
+      [nzTitle]="false"
+      [nzLoading]="loading"
     >
-      {{ mocker.mockerName }}
-    </li>
-  </ul> -->
-
+    </nz-skeleton>
+  </div>
   <nz-list
-    class="demo-loadmore-list"
+    class="chat-list"
     [nzDataSource]="chatList$ | async"
     [nzItemLayout]="'horizontal'"
-    [nzLoading]="!chatList$"
     [nzRenderItem]="item"
+    [nzBordered]="true"
   >
     <ng-template #item let-item>
       <nz-list-item
         [routerLink]="['/chats']"
         [queryParams]="{ chatId: item.chatId }"
         routerLinkActive="router-link-active"
+        [nzActions]="[description]"
       >
-        <nz-skeleton
-          [nzAvatar]="true"
-          [nzActive]="true"
-          [nzTitle]="false"
-          [nzLoading]="!item"
+        <nz-list-item-meta
+          routerLinkActive="router-link-active"
+          [nzTitle]="item.mockerName"
+          nzAvatar="{{ item.imageLink }}"
         >
-          <nz-list-item-meta
-            routerLinkActive="router-link-active"
-            [nzTitle]="item.mockerName"
-            nzAvatar="{{ item.imageLink }}"
-            [nzDescription]="description"
-          >
-            <ng-template #description>
-              <nz-badge
-                [nzCount]="item.newMessageCount"
-                [nzStyle]="{ backgroundColor: '#001529' }"
-              ></nz-badge>
-            </ng-template>
-          </nz-list-item-meta>
-        </nz-skeleton>
+          <ng-template #description>
+            <nz-badge
+              [nzCount]="item.newMessageCount"
+              [nzStyle]="{ backgroundColor: '#001529' }"
+            ></nz-badge>
+          </ng-template>
+        </nz-list-item-meta>
       </nz-list-item>
     </ng-template>
   </nz-list>

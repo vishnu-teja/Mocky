@@ -1,7 +1,7 @@
 .message {
   position: fixed;
   bottom: 0;
-  width: 35%;
+  width: 33%;
   padding-bottom: 3px;
 }
 
@@ -13,6 +13,7 @@
   height: 93vh;
   padding-bottom: 35px;
   width: 100%;
+  background: white;
 }
 
 @media only screen and (max-width: 600px) {
@@ -55,6 +56,10 @@ nz-page-header {
   display: inline-block;
   // width: 100%;
   // text-align: left;
+}
+
+.skeleton-right {
+  padding-left: 10%;
 }
 
 .date-right {

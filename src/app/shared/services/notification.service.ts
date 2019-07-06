@@ -46,7 +46,6 @@ export class NotificationService {
   requestPermission() {
     this.angularFireMessaging.requestToken.subscribe(
       token => {
-        console.log(token);
         this.updateToken(token);
       },
       err => {
@@ -60,7 +59,6 @@ export class NotificationService {
    */
   receiveMessage() {
     this.angularFireMessaging.messages.subscribe((payload: any) => {
-      console.log('new message received. ', payload);
       if (payload.notification.click_action !== this.route.url) {
         this.currentMessage.next(payload);
       }

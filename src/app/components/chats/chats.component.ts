@@ -21,8 +21,8 @@ import * as firebase from 'firebase/app';
 export class ChatsComponent implements OnInit {
   @ViewChild('textArea') textArea;
   public onChats = true;
-  private isNewConversation: boolean;
   public messages$: Observable<any>;
+  public loading = false;
 
   private mockerUId: string;
 
@@ -56,17 +56,17 @@ export class ChatsComponent implements OnInit {
     this.ar.queryParamMap.subscribe((data: any) => {
       this.message = null;
       this.queryParams = data.params;
+      this.loading = true;
+      this.mockerProfile = null;
+
       if ('uId' in this.queryParams) {
         this.onChats = false;
-        this.isNewConversation = true;
         this.chatKey = this.myProfile.key + this.queryParams.uId;
         this.mockerUId = this.queryParams.uId;
         this.setProfiles(true);
-
         this.getMessages();
       } else if ('chatId' in this.queryParams) {
         this.onChats = false;
-        this.isNewConversation = false;
         this.chatKey = this.queryParams.chatId;
 
         this.fs
@@ -84,6 +84,8 @@ export class ChatsComponent implements OnInit {
         this.getMessages();
       } else {
         this.onChats = true;
+        this.loading = false;
+        this.messages$ = null;
       }
     });
   }
@@ -116,7 +118,7 @@ export class ChatsComponent implements OnInit {
             const msg: Message = {
               message: this.cs.set(this.chatKey, 'hello!'),
               sentBy: this.myProfile.key,
-              date: new Date().toString(),
+              date: firebase.firestore.Timestamp.now(),
               senderName: this.myProfile.fullName,
               senderImage: this.myProfile.imageLink,
               recievedBy: this.mockerProfile.key
@@ -146,7 +148,12 @@ export class ChatsComponent implements OnInit {
       .collection(DB_COLLECTIONS.CHATS)
       .doc(this.chatKey)
       .collection('conversations', ref => ref.orderBy('date', 'desc'))
-      .valueChanges();
+      .valueChanges()
+      .pipe(
+        tap(() => {
+          this.loading = false;
+        })
+      );
 
     const objDiv: any = document.getElementsByClassName('chats');
     objDiv.scrollTop = objDiv.scrollHeight;
@@ -168,22 +175,22 @@ export class ChatsComponent implements OnInit {
   }
 
   public sendMsg() {
-    const msg: Message = {
-      message: this.message ? this.cs.set(this.chatKey, this.message) : null,
-      sentBy: this.myProfile.key,
-      senderName: this.myProfile.fullName,
-      senderImage: this.myProfile.imageLink,
-      recievedBy: this.mockerProfile.key,
-      date: new Date().toString()
-    };
-
-    const key =
-      this.queryParams.chatId || this.myProfile.key + this.queryParams.uId;
     if (this.message) {
+      debugger;
+      const msg: Message = {
+        message: this.message ? this.cs.set(this.chatKey, this.message) : null,
+        sentBy: this.myProfile.key,
+        senderName: this.myProfile.fullName,
+        senderImage: this.myProfile.imageLink,
+        recievedBy: this.mockerProfile.key,
+        date: firebase.firestore.Timestamp.now()
+      };
+
+      const key =
+        this.queryParams.chatId || this.myProfile.key + this.queryParams.uId;
       this.updateChat(key, msg);
       this.updateProfile();
       this.message = null;
-      console.log(this.textArea);
       this.textArea.nativeElement.focus();
     }
   }
@@ -198,7 +205,7 @@ export class ChatsComponent implements OnInit {
       mockerName: profile.fullName,
       imageLink: profile.imageLink,
       newMessageCount: 1,
-      lastUpdated: new Date().toString()
+      lastUpdated: firebase.firestore.Timestamp.now()
     };
 
     profile$.set(mocker);
@@ -206,19 +213,25 @@ export class ChatsComponent implements OnInit {
   private updateProfile() {
     this.mockerProfileMock$.update({
       newMessageCount: firebase.firestore.FieldValue.increment(1),
-      lastUpdated: new Date().toString()
+      lastUpdated: firebase.firestore.Timestamp.now()
     });
 
-    this.myProfileMock$.update({ lastUpdated: new Date().toString() });
+    this.myProfileMock$.update({
+      lastUpdated: firebase.firestore.Timestamp.now()
+    });
   }
 
-  public dateFormatter(date: string) {
-    return new Date(date).toLocaleTimeString('en-US', { hour12: false });
+  public dateFormatter(date) {
+    return new Date(date.toDate()).toLocaleTimeString('en-US', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 
   keyBoardEnter(event) {
-    if (event.keyCode === 13) {
-      event.preventDefault();
+    if (event.key === 'Enter') {
+      event.stopPropagation();
       this.sendMsg();
     }
   }

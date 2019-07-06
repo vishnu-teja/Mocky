@@ -5,5 +5,5 @@ export interface Message {
   senderImage?: string;
   type?: string;
   message: string;
-  date: string;
+  date: object;
 }
