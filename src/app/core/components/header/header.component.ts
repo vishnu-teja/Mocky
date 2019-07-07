@@ -45,8 +45,8 @@ export class HeaderComponent implements OnInit {
         .collection('users', ref =>
           ref
             .orderBy('userName')
-            .startAt(this.searchText)
-            .endAt(this.searchText + '\uf8ff')
+            .startAt(this.searchText.toLowerCase())
+            .endAt(this.searchText.toLocaleLowerCase() + '\uf8ff')
         )
         .valueChanges()
         .subscribe((d: User[]) => {

@@ -2,7 +2,12 @@
   <div nz-col nzSpan="0" [nzMd]="6"></div>
   <div nz-col nzSpan="24" [nzMd]="12">
     <div nz-row>
-      <div nz-col nzSpan="{{ onChats ? '23' : '0' }}" [nzMd]="8">
+      <div
+        nz-col
+        nzSpan="{{ onChats ? '23' : '0' }}"
+        [nzMd]="8"
+        class="side-nav"
+      >
         <app-side-nav></app-side-nav>
       </div>
       <div

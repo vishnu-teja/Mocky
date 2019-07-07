@@ -69,11 +69,11 @@ export class SignInComponent implements OnInit {
   }
 
   private signUp(user: UserForm) {
-    const email = user.userName + '@mocky.com';
+    const email = user.userName.toLowerCase() + '@mocky.com';
 
     const newUser: User = {
       fullName: user.fullName,
-      userName: user.userName,
+      userName: user.userName.toLowerCase(),
       mockMail: email,
       imageLink: 'https://image.flaticon.com/icons/png/128/149/149071.png'
     };
@@ -99,13 +99,13 @@ export class SignInComponent implements OnInit {
   }
 
   getUser(user: UserForm) {
-    const email = user.userName + '@mocky.com';
+    const email = user.userName.toLowerCase() + '@mocky.com';
     this.us
       .signInWithEmail(email, user.password)
       .then(result => {
         this.fs
           .collection(DB_COLLECTIONS.USERS, ref =>
-            ref.where('userName', '==', user.userName)
+            ref.where('userName', '==', user.userName.toLowerCase())
           )
           .valueChanges()
           .subscribe(data => {

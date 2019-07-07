@@ -10,5 +10,18 @@
 }
 
 .chat-list {
-  width: 105%;
+  width: 100%;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  float: left;
+  overflow-y: auto;
+  height: 93vh;
+  width: 100%;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
